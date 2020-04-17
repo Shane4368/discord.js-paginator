@@ -1,0 +1,31 @@
+{
+	"name": "discord.js-paginator",
+	"version": "1.0.0",
+	"description": "A reaction-based paginator for the discord.js library.",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"directories": {
+		"test": "tests"
+	},
+	"devDependencies": {
+		"@types/node": "^13.11.1",
+		"discord.js": "^12.1.1"
+	},
+	"scripts": {
+		"test": "node --use-strict ./tests/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Shane4368/discord.js-paginator.git"
+	},
+	"keywords": [
+		"discord.js",
+		"paginator"
+	],
+	"author": "Shane",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Shane4368/discord.js-paginator/issues"
+	},
+	"homepage": "https://github.com/Shane4368/discord.js-paginator#readme"
+}
