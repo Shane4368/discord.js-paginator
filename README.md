@@ -1,5 +1,7 @@
 # discord.js-paginator
-A reaction-based paginator for [discord.js](https://github.com/discordjs/discord.js).
+[![Codacy Badge][codacy-badge]][codacy-dash]
+
+A reaction-based paginator for [discord.js][discord.js-repo].
 
 ## Installation
 Ensure you have git installed, then run `npm i shane4368/discord.js-paginator`.
@@ -56,3 +58,12 @@ Defaults to `{ front: "⏮", rear: "⏭", back: "◀", next: "▶", stop: "⏹�
 If no footer is set, one will be created automatically.
 
 - Default timeout is `120000` (2 minutes).
+
+
+[//]: # (-- REFERENCE LINKS --)
+
+[discord.js-repo]: https://github.com/discordjs/discord.js
+
+[codacy-badge]: https://api.codacy.com/project/badge/Grade/34fd900141914aeab4fdfc1c1ae48f80
+
+[codacy-dash]: https://www.codacy.com/manual/Shane4368/discord.js-paginator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Shane4368/discord.js-paginator&amp;utm_campaign=Badge_Grade

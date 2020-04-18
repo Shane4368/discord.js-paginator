@@ -1,0 +1,5 @@
+# Ignoring auto generated files
+dist/
+
+# Ignoring test files
+tests/

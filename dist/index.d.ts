@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
-import Discord from "discord.js";
+import { TextBasedChannelFields } from "discord.js";
 declare type PaginatorData = {
     /**
      * Embed template to use across pages.
@@ -55,7 +55,7 @@ interface RichEmbed {
     timestamp?: number | null;
     color?: number | null;
     footer?: {
-        text: string | null;
+        text?: string | null;
         icon_url?: string | null;
     };
     image?: {
@@ -65,13 +65,13 @@ interface RichEmbed {
         url: string | null;
     };
     author?: {
-        name: string | null;
+        name?: string | null;
         icon_url?: string | null;
         url?: string | null;
     };
     fields?: {
-        name: string | null;
-        value: string | null;
+        name?: string | null;
+        value?: string | null;
         inline?: boolean | null;
     }[];
 }
@@ -103,7 +103,7 @@ declare class Paginator extends EventEmitter {
     /**
      * @param channel - The channel to create the Paginator in.
      */
-    start(channel: Discord.TextBasedChannelFields): Promise<void>;
+    start(channel: TextBasedChannelFields): Promise<void>;
     destroy(): void;
     on(event: "end", listener: (reason: string) => void): this;
     once(event: "end", listener: (reason: string) => void): this;

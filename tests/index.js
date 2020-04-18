@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 const Discord = require("discord.js");
 const { Paginator } = require("../dist/index");
 // @ts-ignore
@@ -8,8 +8,7 @@ const client = new Discord.Client({ disableMentions: "all" });
 
 client.on("ready", () => console.log(`Ready and logged in as ${client.user.username}`));
 
-client.on("message", async (message) =>
-{
+client.on("message", async (message) => {
 	if (message.author.bot) return;
 	if (!message.content.startsWith(config.prefix)) return;
 
@@ -18,8 +17,7 @@ client.on("message", async (message) =>
 	const timeout = 60000;
 	const stoppable = true;
 
-	if (command === "page")
-	{
+	if (command === "page") {
 		const pages = ["Page 1", "Page 2", "Page 3", "Page 4", "Page 5"]
 			.map(x => x += " content placeholder for smth\n\nPage {0}/{1} <— time");
 
@@ -34,8 +32,7 @@ client.on("message", async (message) =>
 
 		await paginator.start(message.channel).catch(console.error);
 	}
-	else if (command === "page-embed")
-	{
+	else if (command === "page-embed") {
 		const embed = { color: 0x0000ff, title: "Constant Title" };
 		const paginator = new Paginator({
 			embed,
@@ -44,9 +41,7 @@ client.on("message", async (message) =>
 			userID: message.author.id
 		});
 
-		for (let i = 1; i <= 4; i++)
-		{
-			// @ts-ignore
+		for (let i = 1; i <= 4; i++) {
 			paginator.addPage(new Discord.MessageEmbed()
 				.setDescription(`Page ${i} content placeholder for smth`));
 		}

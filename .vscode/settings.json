@@ -1,0 +1,9 @@
+{
+	"javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+	"javascript.format.placeOpenBraceOnNewLineForFunctions": false,
+	"javascript.preferences.quoteStyle": "double",
+	"eslint.validate": [
+		"javascript",
+		"typescript"
+	]
+}
