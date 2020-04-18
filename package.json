@@ -8,7 +8,7 @@
 		"dist/"
 	],
 	"directories": {
-		"test": "tests"
+		"test": "test"
 	},
 	"devDependencies": {
 		"@types/node": "^13.11.1",
@@ -26,7 +26,7 @@
 	},
 	"scripts": {
 		"prepublish":"tsc",
-		"test": "node --use-strict ./tests/index.js"
+		"test": "node --use-strict ./test/index.js"
 	},
 	"engines": {
 		"node": ">=12.0.0"
