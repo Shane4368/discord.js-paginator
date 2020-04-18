@@ -2,4 +2,4 @@
 dist/
 
 # Ignoring test files
-tests/
+test/
