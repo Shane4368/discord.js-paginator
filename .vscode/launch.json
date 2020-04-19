@@ -5,7 +5,7 @@
 			"type": "node",
 			"request": "launch",
 			"name": "discord.js-paginator",
-			"program": "${workspaceFolder}\\tests\\index.js",
+			"program": "${workspaceFolder}\\test\\index.js",
 			"console": "externalTerminal",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": [

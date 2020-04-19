@@ -109,16 +109,16 @@ function delay(timeout: number): Promise<void> {
 }
 
 class Paginator extends EventEmitter {
-	public running: boolean;
 	public destroyed: boolean;
-	public stoppable: boolean;
 
+	private _stoppable: boolean;
 	private _emojis: PaginatorEmojis;
 	private _circular: boolean;
 	private _userID: string | null;
 	private _timeout: number;
 	private _pages: Array<string | RichEmbed>;
 	private _embed: RichEmbed | null;
+	private _running: boolean;
 	private _embedFooterFormat: string | null;
 	private _pageCount: number;
 	private _lastPageIndex: number;
@@ -129,10 +129,9 @@ class Paginator extends EventEmitter {
 	public constructor(data: Partial<PaginatorData> = {}) {
 		super();
 
-		this.running = false;
 		this.destroyed = false;
 
-		this.stoppable = data.stoppable || false;
+		this._stoppable = data.stoppable || false;
 		this._emojis = { ...PaginatorEmojisDefault, ...data.emojis };
 		this._circular = data.circular != null ? data.circular : true;
 		this._userID = data.userID || null;
@@ -140,6 +139,7 @@ class Paginator extends EventEmitter {
 		this._pages = data.pages || [];
 		this._embed = data.embed || null;
 
+		this._running = false;
 		this._embedFooterFormat = null;
 		this._pageCount = this._pages.length;
 		this._lastPageIndex = this._pageCount - 1;
@@ -173,7 +173,7 @@ class Paginator extends EventEmitter {
 	}
 
 	public setStoppable(enable: boolean): this {
-		this.stoppable = enable;
+		this._stoppable = enable;
 		return this;
 	}
 
@@ -196,10 +196,10 @@ class Paginator extends EventEmitter {
 	 * @param channel - The channel to create the Paginator in.
 	 */
 	public async start(channel: TextBasedChannelFields): Promise<void> {
-		if (this.running) return;
+		if (this._running) return;
 
 		this._validate();
-		this.running = true;
+		this._running = true;
 		await this._setMessage(channel);
 
 		const emojis = [
@@ -209,7 +209,7 @@ class Paginator extends EventEmitter {
 			this._emojis.rear
 		].filter(x => typeof x === "string");
 
-		if (this.stoppable && this._emojis.stop) emojis.push(this._emojis.stop);
+		if (this._stoppable && this._emojis.stop) emojis.push(this._emojis.stop);
 
 		for (const emoji of emojis) {
 			await this._message!.react(emoji as string);
@@ -314,7 +314,7 @@ class Paginator extends EventEmitter {
 			}
 		}
 
-		if (typeof this._embedFooterFormat !== "string") {
+		if (this._embedFooterFormat === null) {
 			if (embed.footer) {
 				this._embedFooterFormat = embed.footer.text as string;
 			}
@@ -411,11 +411,10 @@ class Paginator extends EventEmitter {
 	}
 
 	private _onEnd(): void {
-		this.running = false;
+		this._running = false;
 
 		if (!this.destroyed) this.emit("end", "Paginator timed out.");
 	}
 }
 
-export default Paginator;
 export { Paginator };

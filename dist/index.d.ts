@@ -76,15 +76,15 @@ interface RichEmbed {
     }[];
 }
 declare class Paginator extends EventEmitter {
-    running: boolean;
     destroyed: boolean;
-    stoppable: boolean;
+    private _stoppable;
     private _emojis;
     private _circular;
     private _userID;
     private _timeout;
     private _pages;
     private _embed;
+    private _running;
     private _embedFooterFormat;
     private _pageCount;
     private _lastPageIndex;
@@ -116,5 +116,4 @@ declare class Paginator extends EventEmitter {
     private _onReactionAdded;
     private _onEnd;
 }
-export default Paginator;
 export { Paginator };

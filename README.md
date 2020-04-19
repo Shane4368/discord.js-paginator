@@ -1,5 +1,9 @@
 # discord.js-paginator
+
 [![Codacy Badge][codacy-badge]][codacy-dash]
+![GitHub package.json version (branch)][package.json-version]
+![GitHub LICENSE](https://img.shields.io/github/license/Shane4368/discord.js-paginator.svg)
+![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 
 A reaction-based paginator for [discord.js][discord.js-repo].
 
@@ -40,7 +44,7 @@ const paginator = new Paginator({
 	circular: true,	// Whether or not to allow pages to loop.
 	embed: {},	// An embed template to use across pages.
 	emojis: {},	// Override the default emojis specified.
-	pages: [],	// Can be a string, embed object or MessageEmbed
+	pages: [],	// Can be a string, embed object or MessageEmbed.
 	timeout: 1000 * 60,	// Duration of the paginator's lifetime.
 	userID: message.author.id,	// Self-explanatory.
 	stoppable: true	// Whether or not to include the stop emoji.
@@ -48,21 +52,23 @@ const paginator = new Paginator({
 ```
 
 ## Notes
-- All properties set in the constructor can be set after initialization
+  - All properties set in the constructor can be set after initialization
 using the helper methods.
 
-- Supports custom guild emojis by specifying the id.<br>
+  - Supports custom guild emojis by specifying the id.<br>
 Defaults to `{ front: "⏮", rear: "⏭", back: "◀", next: "▶", stop: "⏹️" }`.
 
-- Place the page number format in the footer text when using an embed.
+  - Place the page number format in the footer text when using an embed.
 If no footer is set, one will be created automatically.
 
-- Default timeout is `120000` (2 minutes).
+  - Default timeout is `120000` (2 minutes).
 
 
 [//]: # (-- REFERENCE LINKS --)
 
 [discord.js-repo]: https://github.com/discordjs/discord.js
+
+[package.json-version]: https://img.shields.io/github/package-json/v/Shane4368/discord.js-paginator/master.svg
 
 [codacy-badge]: https://api.codacy.com/project/badge/Grade/34fd900141914aeab4fdfc1c1ae48f80
 

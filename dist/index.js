@@ -14,15 +14,15 @@ function delay(timeout) {
 class Paginator extends events_1.EventEmitter {
     constructor(data = {}) {
         super();
-        this.running = false;
         this.destroyed = false;
-        this.stoppable = data.stoppable || false;
+        this._stoppable = data.stoppable || false;
         this._emojis = { ...PaginatorEmojisDefault, ...data.emojis };
         this._circular = data.circular != null ? data.circular : true;
         this._userID = data.userID || null;
         this._timeout = data.timeout || 120000;
         this._pages = data.pages || [];
         this._embed = data.embed || null;
+        this._running = false;
         this._embedFooterFormat = null;
         this._pageCount = this._pages.length;
         this._lastPageIndex = this._pageCount - 1;
@@ -51,7 +51,7 @@ class Paginator extends events_1.EventEmitter {
         return this;
     }
     setStoppable(enable) {
-        this.stoppable = enable;
+        this._stoppable = enable;
         return this;
     }
     setEmbedTemplate(embed) {
@@ -70,10 +70,10 @@ class Paginator extends events_1.EventEmitter {
      * @param channel - The channel to create the Paginator in.
      */
     async start(channel) {
-        if (this.running)
+        if (this._running)
             return;
         this._validate();
-        this.running = true;
+        this._running = true;
         await this._setMessage(channel);
         const emojis = [
             this._emojis.front,
@@ -81,7 +81,7 @@ class Paginator extends events_1.EventEmitter {
             this._emojis.next,
             this._emojis.rear
         ].filter(x => typeof x === "string");
-        if (this.stoppable && this._emojis.stop)
+        if (this._stoppable && this._emojis.stop)
             emojis.push(this._emojis.stop);
         for (const emoji of emojis) {
             await this._message.react(emoji);
@@ -160,7 +160,7 @@ class Paginator extends events_1.EventEmitter {
                 embed.url = this._embed.url;
             }
         }
-        if (typeof this._embedFooterFormat !== "string") {
+        if (this._embedFooterFormat === null) {
             if (embed.footer) {
                 this._embedFooterFormat = embed.footer.text;
             }
@@ -246,10 +246,9 @@ class Paginator extends events_1.EventEmitter {
         await this._editMessage();
     }
     _onEnd() {
-        this.running = false;
+        this._running = false;
         if (!this.destroyed)
             this.emit("end", "Paginator timed out.");
     }
 }
 exports.Paginator = Paginator;
-exports.default = Paginator;

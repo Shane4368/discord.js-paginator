@@ -40,7 +40,7 @@
 		"paginator"
 	],
 	"author": "Shane",
-	"license": "ISC",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/Shane4368/discord.js-paginator/issues"
 	},
