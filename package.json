@@ -1,7 +1,7 @@
 {
 	"name": "discord.js-paginator",
 	"version": "1.0.0",
-	"description": "A reaction-based paginator for the discord.js library.",
+	"description": "A simple reaction-based paginator for the discord.js library.",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"files": [
@@ -25,7 +25,8 @@
 		"typescript": "^3.8.3"
 	},
 	"scripts": {
-		"prepublish":"tsc",
+		"prepare": "tsc",
+		"prepublishOnly": "tsc",
 		"test": "node --use-strict ./test/index.js"
 	},
 	"engines": {

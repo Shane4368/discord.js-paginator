@@ -13,18 +13,18 @@ type PaginatorData = {
 	 * Embed template to use across pages.
 	 * All properties on this object will be shown on every page.
 	 */
-	embed: RichEmbed;
+	embed: MessageEmbed | null;
 
 	/**
 	 * The emojis to use for skipping the pages.
 	 * Specify the id for custom guild emojis.
 	 */
-	emojis: PaginatorEmojis;
+	emojis: Partial<PaginatorEmojis> | null;
 
 	/**
 	 * The id of the user to listen to.
 	 */
-	userID: string;
+	userID: string | null;
 
 	/**
 	 * The time in milliseconds of how long to keep the paginator running.
@@ -35,7 +35,7 @@ type PaginatorData = {
 	/**
 	 * The pages to use in the paginator. Must be 2 or more pages.
 	 */
-	pages: Array<string | RichEmbed>;
+	pages: Array<string | MessageEmbed>;
 
 	/**
 	 * If set to `true`, the paginator will include the stop emoji.
@@ -68,7 +68,12 @@ type PaginatorEmojis = {
 	stop?: string | null;
 };
 
-interface RichEmbed {
+interface PaginatorEvents {
+	end: [string];
+	error: [Error];
+}
+
+interface MessageEmbed {
 	title?: string | null;
 	description?: string | null;
 	url?: string | null;
@@ -108,62 +113,69 @@ function delay(timeout: number): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-class Paginator extends EventEmitter {
+export class Paginator extends EventEmitter {
 	public destroyed: boolean;
 
-	private _stoppable: boolean;
-	private _emojis: PaginatorEmojis;
+	private static readonly _footerFormat = "Page {0}/{1}";
+
+	private _collector: ReactionCollector | null = null;
+	private _embedFooterFormat: string | null = null;
+	private _message: Message | null = null;
+	private _currentPageIndex = 0;
+	private _running = false;
+
 	private _circular: boolean;
-	private _userID: string | null;
+	private _embed: MessageEmbed | null;
+	private _emojis: PaginatorEmojis;
+	private _pages: Array<string | MessageEmbed>;
+	private _stoppable: boolean;
 	private _timeout: number;
-	private _pages: Array<string | RichEmbed>;
-	private _embed: RichEmbed | null;
-	private _running: boolean;
-	private _embedFooterFormat: string | null;
+	private _userID: string | null;
 	private _pageCount: number;
 	private _lastPageIndex: number;
-	private _currentPageIndex: number;
-	private _message: Message | null;
-	private _collector: ReactionCollector | null;
 
 	public constructor(data: Partial<PaginatorData> = {}) {
 		super();
 
+		const {
+			circular = true,
+			embed = null,
+			emojis = null,
+			pages = [],
+			stoppable = false,
+			timeout = 120000,
+			userID = null
+		} = data;
+
 		this.destroyed = false;
 
-		this._stoppable = data.stoppable || false;
-		this._emojis = { ...PaginatorEmojisDefault, ...data.emojis };
-		this._circular = data.circular != null ? data.circular : true;
-		this._userID = data.userID || null;
-		this._timeout = data.timeout || 120000;
-		this._pages = data.pages || [];
-		this._embed = data.embed || null;
-
-		this._running = false;
-		this._embedFooterFormat = null;
+		this._circular = circular;
+		this._embed = embed;
+		this._emojis = { ...PaginatorEmojisDefault, ...emojis };
+		this._pages = pages;
+		this._stoppable = stoppable;
+		this._timeout = timeout;
+		this._userID = userID;
 		this._pageCount = this._pages.length;
 		this._lastPageIndex = this._pageCount - 1;
-		this._currentPageIndex = 0;
-		this._message = null;
-		this._collector = null;
 	}
 
-	public addPage(page: string | RichEmbed): this {
+	public addPage(page: string | MessageEmbed): this {
 		this._pages.push(page);
 		this._pageCount++;
 		this._lastPageIndex++;
 		return this;
 	}
 
-	public setPages(pages: Array<string | RichEmbed>): this {
+	public setPages(pages: Array<string | MessageEmbed>): this {
 		this._pages = pages;
 		this._pageCount = this._pages.length;
 		this._lastPageIndex = this._pageCount - 1;
 		return this;
 	}
 
-	public setEmojis(emojis: PaginatorEmojis): this {
-		this._emojis = emojis;
+	public setEmojis(emojis: Partial<PaginatorEmojis>): this {
+		this._emojis = { ...PaginatorEmojisDefault, ...emojis };
 		return this;
 	}
 
@@ -172,18 +184,18 @@ class Paginator extends EventEmitter {
 		return this;
 	}
 
-	public setStoppable(enable: boolean): this {
-		this._stoppable = enable;
+	public setStoppable(stoppable: boolean): this {
+		this._stoppable = stoppable;
 		return this;
 	}
 
-	public setEmbedTemplate(embed: RichEmbed): this {
+	public setEmbedTemplate(embed: MessageEmbed): this {
 		this._embed = embed;
 		return this;
 	}
 
-	public setCircular(enable: boolean): this {
-		this._circular = enable;
+	public setCircular(circular: boolean): this {
+		this._circular = circular;
 		return this;
 	}
 
@@ -196,9 +208,8 @@ class Paginator extends EventEmitter {
 	 * @param channel - The channel to create the Paginator in.
 	 */
 	public async start(channel: TextBasedChannelFields): Promise<void> {
-		if (this._running) return;
+		if (this._running || !this._validate()) return;
 
-		this._validate();
 		this._running = true;
 		await this._setMessage(channel);
 
@@ -212,7 +223,7 @@ class Paginator extends EventEmitter {
 		if (this._stoppable && this._emojis.stop) emojis.push(this._emojis.stop);
 
 		for (const emoji of emojis) {
-			await this._message!.react(emoji as string);
+			await this._message!.react(emoji!);
 			await delay(500);
 		}
 
@@ -230,19 +241,19 @@ class Paginator extends EventEmitter {
 		this.emit("end", "Paginator was destroyed.");
 	}
 
-	public on(event: "end", listener: (reason: string) => void): this;
+	public on<K extends keyof PaginatorEvents>(event: K, listener: (...args: PaginatorEvents[K]) => void): this;
 	public on(event: string | symbol, listener: (...args: any[]) => void): this {
 		super.on(event, listener);
 		return this;
 	}
 
-	public once(event: "end", listener: (reason: string) => void): this;
+	public once<K extends keyof PaginatorEvents>(event: K, listener: (...args: PaginatorEvents[K]) => void): this;
 	public once(event: string | symbol, listener: (...args: any[]) => void): this {
 		super.once(event, listener);
 		return this;
 	}
 
-	public emit(event: "end", reason: string): boolean;
+	public emit<K extends keyof PaginatorEvents>(event: K, ...args: PaginatorEvents[K]): boolean;
 	public emit(event: string | symbol, ...args: any[]): boolean {
 		return super.emit(event, ...args);
 	}
@@ -251,28 +262,28 @@ class Paginator extends EventEmitter {
 		const page = this._pages[0];
 
 		this._message = typeof page === "string"
-			? await channel.send(this._formatPage(page))
-			: await channel.send({ embed: this._syncEmbed(page) });
+			? await channel.send(this._renderPageNumber(page))
+			: await channel.send({ embed: this._mergeEmbedTemplate(page) });
 	}
 
 	private async _editMessage(): Promise<void> {
 		const page = this._pages[this._currentPageIndex];
 
 		if (typeof page === "string") {
-			await this._message!.edit(this._formatPage(page));
+			await this._message!.edit(this._renderPageNumber(page));
 		}
 		else {
-			await this._message!.edit({ embed: this._syncEmbed(page) });
+			await this._message!.edit({ embed: this._mergeEmbedTemplate(page) });
 		}
 	}
 
-	private _formatPage(page: string): string {
+	private _renderPageNumber(page: string): string {
 		return page.replace("{0}", (this._currentPageIndex + 1).toString())
 			.replace("{1}", this._pageCount.toString());
 	}
 
-	private _syncEmbed(embed: RichEmbed): RichEmbed {
-		if (this._embed !== null) {
+	private _mergeEmbedTemplate(embed: MessageEmbed): MessageEmbed {
+		if (this._embed != null) {
 			if (this._embed.author) {
 				embed.author = this._embed.author;
 			}
@@ -314,43 +325,49 @@ class Paginator extends EventEmitter {
 			}
 		}
 
-		if (this._embedFooterFormat === null) {
-			if (embed.footer) {
-				this._embedFooterFormat = embed.footer.text as string;
-			}
-			else {
-				embed.footer = { text: null };
-				this._embedFooterFormat = "Page {0}/{1}";
+		if (embed.footer) {
+			if (this._embedFooterFormat === null) {
+				this._embedFooterFormat = embed.footer.text || Paginator._footerFormat;
 			}
 		}
+		else {
+			embed.footer = { text: Paginator._footerFormat };
 
-		if (!embed.footer) {
-			embed.footer = { text: this._embedFooterFormat };
+			if (this._embedFooterFormat === null) this._embedFooterFormat = Paginator._footerFormat;
 		}
 
-		embed.footer.text = (this._embedFooterFormat as string)
-			.replace("{0}", (this._currentPageIndex + 1).toString())
-			.replace("{1}", this._pageCount.toString());
+		embed.footer.text = this._renderPageNumber(this._embedFooterFormat);
 
 		return embed;
 	}
 
-	private _validate(): void {
+	private _validate(): boolean {
 		if (this.destroyed) {
-			throw new Error("Tried to use Paginator after it was destroyed.");
+			this.emit("error", new Error("Tried to use Paginator after it was destroyed."));
+			return false;
+		}
+
+		if (!(this._pages instanceof Array)) {
+			this.emit("error", new TypeError(`pages must be an array. Received type '${typeof this._emojis}.'`));
+			return false;
 		}
 
 		if (this._pages.length <= 1) {
-			throw new Error("More than 1 page is required for the Paginator to start.");
+			this.emit("error", new Error("Paginator must have more than 1 page."));
+			return false;
 		}
 
 		if (!["back", "next"].every(x => typeof this._emojis[x as keyof PaginatorEmojis] === "string")) {
-			throw new TypeError("emojis must have a 'back' and 'next' property of type string.");
+			this.emit("error", new Error("emojis must have a 'back' and 'next' property."));
+			return false;
 		}
 
 		if (typeof this._userID !== "string") {
-			throw new TypeError(`userID must be a string. Received type '${typeof this._userID}'`);
+			this.emit("error", new TypeError(`userID must be of type 'string.' Received type '${typeof this._userID}.'`));
+			return false;
 		}
+
+		return true;
 	}
 
 	private async _onReactionAdded(reaction: MessageReaction, user: User): Promise<void> {
@@ -416,5 +433,3 @@ class Paginator extends EventEmitter {
 		if (!this.destroyed) this.emit("end", "Paginator timed out.");
 	}
 }
-
-export { Paginator };

@@ -1,4 +1,4 @@
 exclude_paths:
-	'.vscode/'
-	'dist/'
-	'**.json'
+  - '.vscode/**'
+  - '**.json'
+  - '.codacy.yml'
