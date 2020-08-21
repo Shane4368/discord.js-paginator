@@ -1,7 +1,7 @@
 # discord.js-paginator
 
 [![Codacy Badge][codacy-badge]][codacy-dash]
-![GitHub package.json version (branch)][package.json-version]
+![GitHub package.json version][package.json-version]
 ![GitHub LICENSE](https://img.shields.io/github/license/Shane4368/discord.js-paginator.svg)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 
@@ -42,6 +42,7 @@ await paginator.start(message.channel).catch(console.error);
 ```js
 const paginator = new Paginator({
 	circular: true,		// Whether or not to allow pages to loop.
+	content: null,	// Text to be displayed when using embed pages.
 	embed: {},		// An embed template to use across pages.
 	emojis: {},		// Override the default emojis specified.
 	pages: [],		// Array of string, embed object or MessageEmbed.
@@ -80,18 +81,30 @@ paginator.setStoppable(true);
 using the helper methods.
 
 - Supports custom guild emoji by specifying the id.<br>
-Defaults to `{ front: "⏮", rear: "⏭", back: "◀", next: "▶", stop: "⏹️" }`.
+Defaults to:
+```js
+{
+	front: "⏮",
+	rear: "⏭",
+	back: "◀",
+	next: "▶",
+	stop: "⏹️",
+	jump: "🔢",
+	trash: "🗑",
+	info: "ℹ️"
+}
+```
 
 - Place the page number format in the footer text when using an embed.
 If no footer is present, one will be automatically created.
 
-- Default timeout is `120000` (2 minutes).
+- Default timeout is `120000ms` (2 minutes).
 
-- The paginator must have at least two pages.
+- The paginator must have at least one page.
 
 <!-- -------------------------------- REFERENCE LINKS -------------------------------- -->
 
 [discord.js-repo]: https://github.com/discordjs/discord.js
-[package.json-version]: https://img.shields.io/github/package-json/v/Shane4368/discord.js-paginator/master.svg
+[package.json-version]: https://img.shields.io/github/package-json/v/Shane4368/discord.js-paginator.svg
 [codacy-badge]: https://api.codacy.com/project/badge/Grade/34fd900141914aeab4fdfc1c1ae48f80
 [codacy-dash]: https://www.codacy.com/manual/Shane4368/discord.js-paginator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Shane4368/discord.js-paginator&amp;utm_campaign=Badge_Grade

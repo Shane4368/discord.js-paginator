@@ -11,14 +11,19 @@ client.on("message", async (message) => {
 
 	const [command, ...args] = message.content.slice(config.prefix.length).split(/ +/g);
 
-	if (command === "without-embed") await withoutEmbed(message).catch(console.error);
-	else if (command === "embed-without-footer") await embedWithoutFooter(message).catch(console.error);
-	else if (command === "embed-with-footer-but-no-text") await embedWithFooterButNoText(message).catch(console.error);
-	else if (command === "eval") {	// For additional testing
-		if (message.author.id !== config.ownerID) return;
+	try {
+		if (command === "without-embed") await withoutEmbed(message);
+		else if (command === "embed-without-footer") await embedWithoutFooter(message);
+		else if (command === "embed-with-footer-but-no-text") await embedWithFooterButNoText(message);
+		else if (command === "eval") {	// For additional testing
+			if (message.author.id !== config.ownerID) return;
 
-		const code = args.join(" ").slice(6, -3);
-		await eval(`(async()=>{${code}})();`).catch(console.error);
+			const code = args.join(" ").slice(6, -3);
+			await eval(`(async()=>{${code}})();`);
+		}
+	}
+	catch (error) {
+		console.error(error);
 	}
 });
 

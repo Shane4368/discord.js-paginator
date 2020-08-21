@@ -10,6 +10,11 @@ import {
 type PaginatorData = {
 
 	/**
+	 * The text to be displayed when using embed pages.
+	 */
+	content: string | null;
+
+	/**
 	 * Embed template to use across pages.
 	 * All properties on this object will be shown on every page.
 	 */
@@ -53,10 +58,10 @@ type PaginatorData = {
 type PaginatorEmojis = {
 
 	/** @default "⏮" */
-	front?: string | null;
+	front: string | null;
 
 	/** @default "⏭" */
-	rear?: string | null;
+	rear: string | null;
 
 	/** @default "◀" */
 	back: string;
@@ -65,7 +70,16 @@ type PaginatorEmojis = {
 	next: string;
 
 	/** @default "⏹️" */
-	stop?: string | null;
+	stop: string | null;
+
+	/** @default "🔢" */
+	jump: string | null;
+
+	/** @default "🗑" */
+	trash: string | null;
+
+	/** @default "ℹ️" */
+	info: string | null;
 };
 
 interface PaginatorEvents {
@@ -106,7 +120,10 @@ const PaginatorEmojisDefault: Readonly<PaginatorEmojis> = {
 	rear: "⏭",
 	back: "◀",
 	next: "▶",
-	stop: "⏹️"
+	stop: "⏹️",
+	jump: "🔢",
+	trash: "🗑",
+	info: "ℹ️"
 };
 
 function delay(timeout: number): Promise<void> {
@@ -125,6 +142,7 @@ export class Paginator extends EventEmitter {
 	private _running = false;
 
 	private _circular: boolean;
+	private _content: string | null;
 	private _embed: MessageEmbed | null;
 	private _emojis: PaginatorEmojis;
 	private _pages: Array<string | MessageEmbed>;
@@ -139,6 +157,7 @@ export class Paginator extends EventEmitter {
 
 		const {
 			circular = true,
+			content = null,
 			embed = null,
 			emojis = null,
 			pages = [],
@@ -150,6 +169,7 @@ export class Paginator extends EventEmitter {
 		this.destroyed = false;
 
 		this._circular = circular;
+		this._content = content;
 		this._embed = embed;
 		this._emojis = { ...PaginatorEmojisDefault, ...emojis };
 		this._pages = pages;
@@ -194,6 +214,11 @@ export class Paginator extends EventEmitter {
 		return this;
 	}
 
+	public setContent(content: string): this {
+		this._content = content;
+		return this;
+	}
+
 	public setCircular(circular: boolean): this {
 		this._circular = circular;
 		return this;
@@ -213,14 +238,22 @@ export class Paginator extends EventEmitter {
 		this._running = true;
 		await this._setMessage(channel);
 
+		if (this._pageCount === 1) {
+			this.emit("end", "Paginator had only 1 page.");
+			return;
+		}
+
 		const emojis = [
 			this._emojis.front,
 			this._emojis.back,
 			this._emojis.next,
-			this._emojis.rear
+			this._emojis.rear,
+			this._emojis.jump,
+			this._emojis.trash,
+			this._emojis.info
 		].filter(x => typeof x === "string");
 
-		if (this._stoppable && this._emojis.stop) emojis.push(this._emojis.stop);
+		if (this._stoppable && this._emojis.stop) emojis.splice(4, 0, this._emojis.stop);
 
 		for (const emoji of emojis) {
 			await this._message!.react(emoji!);
@@ -261,9 +294,15 @@ export class Paginator extends EventEmitter {
 	private async _setMessage(channel: TextBasedChannelFields): Promise<void> {
 		const page = this._pages[0];
 
-		this._message = typeof page === "string"
-			? await channel.send(this._renderPageNumber(page))
-			: await channel.send({ embed: this._mergeEmbedTemplate(page) });
+		if (typeof page === "string") {
+			this._message = await channel.send(this._renderPageNumber(page));
+		}
+		else {
+			this._message = await channel.send({
+				content: this._content,
+				embed: this._mergeEmbedTemplate(page)
+			});
+		}
 	}
 
 	private async _editMessage(): Promise<void> {
@@ -347,13 +386,8 @@ export class Paginator extends EventEmitter {
 			return false;
 		}
 
-		if (!(this._pages instanceof Array)) {
-			this.emit("error", new TypeError(`pages must be an array. Received type '${typeof this._emojis}.'`));
-			return false;
-		}
-
-		if (this._pages.length <= 1) {
-			this.emit("error", new Error("Paginator must have more than 1 page."));
+		if (this._pageCount === 0) {
+			this.emit("error", new Error("Paginator must have at least 1 page."));
 			return false;
 		}
 
@@ -371,7 +405,13 @@ export class Paginator extends EventEmitter {
 	}
 
 	private async _onReactionAdded(reaction: MessageReaction, user: User): Promise<void> {
-		await reaction.users.remove(user);
+		const channel = reaction.message.channel;
+		let hasManageMessages = false;
+
+		if (channel.type !== "dm") {
+			hasManageMessages = channel.permissionsFor(user.client.user!)!.has("MANAGE_MESSAGES");
+			if (hasManageMessages) await reaction.users.remove(user);
+		}
 
 		switch (reaction.emoji.id || reaction.emoji.name) {
 			case this._emojis.front: {
@@ -421,6 +461,38 @@ export class Paginator extends EventEmitter {
 			case this._emojis.stop: {
 				this.destroy();
 				return;
+			}
+
+			case this._emojis.trash: {
+				this.destroy();
+				await this._message!.delete();
+				return;
+			}
+
+			case this._emojis.info: {
+				const msg = await this._message!.channel.send("This is a paginator. React to change page.");
+				await msg.delete({ timeout: 5000 });
+				return;
+			}
+
+			case this._emojis.jump: {
+				const msg = await this._message!.channel.send("Enter page number to jump to.");
+				const filter = (x: Message): boolean => x.author.id === this._userID;
+				const collected = await msg.channel.awaitMessages(filter, { max: 1, time: 10000 });
+
+				await msg.delete();
+
+				if (collected.size === 0) return;
+
+				const collectedMessage = collected.first()!;
+				const pageNumber = parseInt(collectedMessage.content);
+
+				if (Number.isNaN(pageNumber)) return;
+				if (pageNumber <= 0 || pageNumber > this._pageCount) return;
+				if (hasManageMessages) await collectedMessage.delete();
+
+				this._currentPageIndex = pageNumber - 1;
+				break;
 			}
 		}
 
