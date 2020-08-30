@@ -1,0 +1,7 @@
+{
+	"mode": "file",
+	"theme": "minimal",
+	"includeVersion": true,
+	"excludePrivate": true,
+	"stripInternal": true
+}

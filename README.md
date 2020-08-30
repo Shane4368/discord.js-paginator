@@ -4,6 +4,7 @@
 ![GitHub package.json version][package.json-version]
 ![GitHub LICENSE](https://img.shields.io/github/license/Shane4368/discord.js-paginator.svg)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
+![Docs Build Status](https://github.com/Shane4368/discord.js-paginator/workflows/Build%20Documentation/badge.svg)
 
 A simple reaction-based paginator for [discord.js][discord.js-repo].
 
@@ -15,6 +16,7 @@ This package does not work with discord.js v11 and previous versions.
 Only discord.js v12 is currently supported.
 
 ## Examples
+See full [documentation](https://shane4368.github.io/discord.js-paginator).
 
 ### Basic setup
 ```js
@@ -38,20 +40,6 @@ paginator.addPage("This is the first page.\n\nPage {0}/{1}")
 await paginator.start(message.channel).catch(console.error);
 ```
 
-### Using the Paginator constructor
-```js
-const paginator = new Paginator({
-	circular: true,		// Whether or not to allow pages to loop.
-	content: null,	// Text to be displayed when using embed pages.
-	embed: {},		// An embed template to use across pages.
-	emojis: {},		// Override the default emojis specified.
-	pages: [],		// Array of string, embed object or MessageEmbed.
-	timeout: 1000 * 60,		// Duration of the paginator's lifetime.
-	userID: message.author.id,	// Self-explanatory.
-	stoppable: false		// Whether or not to include the stop emoji.
-});
-```
-
 ### Miscellaneous
 ```js
 // Setting embed template.
@@ -67,40 +55,16 @@ paginator.setEmbedTemplate({
 paginator.addPage({ description: "This is the first page." })
 	.addPage({ description: "This is the second page." });
 
-// Disabling front and rear emojis.
-paginator.setEmojis({ front: null, rear: null });
-// Overriding defaults for front and rear emojis.
-paginator.setEmojis({ front: "👈", rear: "👉" });
-
-// Enabling the stop emoji.
-paginator.setStoppable(true);
+// Disabling front, rear and trash emojis.
+paginator.setEmojis({ front: null, rear: null, trash: null });
+// Overriding defaults for front, rear and trash emojis.
+paginator.setEmojis({ front: "👈", rear: "👉", trash: "474075113176825866" });
 ```
 
 ## Notes
-- All properties set in the constructor may be set after initialization
-using the helper methods.
-
-- Supports custom guild emoji by specifying the id.<br>
-Defaults to:
-```js
-{
-	front: "⏮",
-	rear: "⏭",
-	back: "◀",
-	next: "▶",
-	stop: "⏹️",
-	jump: "🔢",
-	trash: "🗑",
-	info: "ℹ️"
-}
-```
-
 - Place the page number format in the footer text when using an embed.
 If no footer is present, one will be automatically created.
 
-- Default timeout is `120000ms` (2 minutes).
-
-- The paginator must have at least one page.
 
 <!-- -------------------------------- REFERENCE LINKS -------------------------------- -->
 
