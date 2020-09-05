@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>discord.js-paginator - v2.0.0 | discord.js-paginator - v2.0.0</title>
-	<meta name="description" content="Documentation for discord.js-paginator - v2.0.0">
+	<title>@shane4368/discord.js-paginator - v2.0.0 | @shane4368/discord.js-paginator - v2.0.0</title>
+	<meta name="description" content="Documentation for @shane4368/discord.js-paginator - v2.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
 /* ==========================================================================
@@ -2692,7 +2692,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">discord.js-paginator - v2.0.0</a></strong>
+					<strong><a href="index.html">@shane4368/discord.js-paginator - v2.0.0</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2754,7 +2754,11 @@ img {
 			<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 				<h2>Installation</h2>
 			</a>
-			<p>Ensure you have git installed, then run <code>npm i shane4368/discord.js-paginator</code>.</p>
+			<pre><code class="language-bash"><span class="hljs-comment"># For stable</span>
+npm i @shane4368/discord.js-paginator
+
+<span class="hljs-comment"># For development (requires git)</span>
+npm i shane4368/discord.js-paginator</code></pre>
 			<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
 				<h2>Compatibility</h2>
 			</a>
@@ -2767,7 +2771,7 @@ img {
 			<a href="#basic-setup" id="basic-setup" style="color: inherit; text-decoration: none;">
 				<h3>Basic setup</h3>
 			</a>
-			<pre><code class="language-js"><span class="hljs-keyword">const</span> { Paginator } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;discord.js-paginator&quot;</span>);
+			<pre><code class="language-js"><span class="hljs-keyword">const</span> { Paginator } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@shane4368/discord.js-paginator&quot;</span>);
 
 <span class="hljs-keyword">const</span> paginator = <span class="hljs-keyword">new</span> Paginator({ <span class="hljs-attr">userID</span>: message.author.id });
 
@@ -2845,7 +2849,7 @@ paginator.setEmojis({ <span class="hljs-attr">front</span>: <span class="hljs-st
 				<div class="tsd-signature tsd-kind-icon">Paginator<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>circular<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>deleteOnTimeout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>embed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageEmbed</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>emojis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="globals.html#paginatoremojis" class="tsd-signature-type">PaginatorEmojis</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>infoOptions<span class="tsd-signature-symbol">: </span><a href="globals.html#paginatorinfooptions" class="tsd-signature-type">PaginatorInfoOptions</a><span class="tsd-signature-symbol">; </span>jumpOptions<span class="tsd-signature-symbol">: </span><a href="globals.html#paginatorjumpoptions" class="tsd-signature-type">PaginatorJumpOptions</a><span class="tsd-signature-symbol">; </span>pages<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MessageEmbed</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>timeout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>userID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> }</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/9d1bf40/src/index.ts#L10">src/index.ts:10</a></li>
+						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/c8238ae/src/index.ts#L10">src/index.ts:10</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -2957,7 +2961,7 @@ paginator.setEmojis({ <span class="hljs-attr">front</span>: <span class="hljs-st
 				<div class="tsd-signature tsd-kind-icon">Paginator<wbr>Emojis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>back<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>front<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>jump<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>rear<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>stop<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">; </span>trash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> }</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/9d1bf40/src/index.ts#L58">src/index.ts:58</a></li>
+						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/c8238ae/src/index.ts#L58">src/index.ts:58</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -3052,7 +3056,7 @@ paginator.setEmojis({ <span class="hljs-attr">front</span>: <span class="hljs-st
 				<div class="tsd-signature tsd-kind-icon">Paginator<wbr>Info<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>timeout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/9d1bf40/src/index.ts#L85">src/index.ts:85</a></li>
+						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/c8238ae/src/index.ts#L85">src/index.ts:85</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -3087,7 +3091,7 @@ paginator.setEmojis({ <span class="hljs-attr">front</span>: <span class="hljs-st
 				<div class="tsd-signature tsd-kind-icon">Paginator<wbr>Jump<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>deleteResponse<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>prompt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>showPrompt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>timeout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/9d1bf40/src/index.ts#L96">src/index.ts:96</a></li>
+						<li>Defined in <a href="https://github.com/Shane4368/discord.js-paginator/blob/c8238ae/src/index.ts#L96">src/index.ts:96</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
