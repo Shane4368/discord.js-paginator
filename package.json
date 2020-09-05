@@ -1,5 +1,5 @@
 {
-	"name": "discord.js-paginator",
+	"name": "@shane4368/discord.js-paginator",
 	"version": "2.0.0",
 	"description": "A simple reaction-based paginator for the discord.js library.",
 	"main": "./dist/index.js",
@@ -24,6 +24,7 @@
 	},
 	"scripts": {
 		"prepare": "tsc",
+		"prepublishOnly": "tsc",
 		"test": "node --use-strict ./test/index.js",
 		"docs": "typedoc"
 	},

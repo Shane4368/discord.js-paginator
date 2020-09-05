@@ -9,7 +9,13 @@
 A simple reaction-based paginator for [discord.js][discord.js-repo].
 
 ## Installation
-Ensure you have git installed, then run `npm i shane4368/discord.js-paginator`.
+```bash
+# For stable
+npm i @shane4368/discord.js-paginator
+
+# For development (requires git)
+npm i shane4368/discord.js-paginator
+```
 
 ## Compatibility
 This package does not work with discord.js v11 and previous versions.
@@ -20,7 +26,7 @@ See full [documentation](https://shane4368.github.io/discord.js-paginator).
 
 ### Basic setup
 ```js
-const { Paginator } = require("discord.js-paginator");
+const { Paginator } = require("@shane4368/discord.js-paginator");
 
 const paginator = new Paginator({ userID: message.author.id });
 
