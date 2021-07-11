@@ -19,12 +19,12 @@
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-promise": "^4.2.1",
 		"eslint-plugin-standard": "^4.0.1",
-		"typedoc": "^0.18.0",
-		"typescript": "^3.8.3"
+		"typedoc": "^0.21.2",
+		"typedoc-selectable-themes": "github:shane4368/typedoc-selectable-themes",
+		"typescript": "^4.3.5"
 	},
 	"scripts": {
 		"prepare": "tsc",
-		"prepublishOnly": "tsc",
 		"test": "node --use-strict ./test/index.js",
 		"docs": "typedoc"
 	},
@@ -33,13 +33,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Shane4368/discord.js-paginator.git"
+		"url": "https://github.com/Shane4368/discord.js-paginator.git"
 	},
 	"keywords": [
 		"discord.js",
+        "pagination",
 		"paginator"
 	],
-	"author": "Shane",
+	"author": "Shane4368",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/Shane4368/discord.js-paginator/issues"

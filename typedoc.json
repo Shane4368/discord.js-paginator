@@ -1,7 +1,12 @@
 {
-	"mode": "file",
-	"theme": "minimal",
-	"includeVersion": true,
-	"excludePrivate": true,
-	"stripInternal": true
+    "out": "docs/2.x",
+    "theme": "node_modules/typedoc-selectable-themes/bin/minimal",
+    "highlightTheme": "material-ocean",
+    "entryPoints": [
+        "src/index.ts"
+    ],
+    "readme": "README.md",
+    "includeVersion": true,
+    "excludePrivate": true,
+    "excludeInternal": true
 }
