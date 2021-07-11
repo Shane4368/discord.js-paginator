@@ -22,7 +22,7 @@ This package does not work with discord.js v11 and previous versions.
 Only discord.js v12 is currently supported.
 
 ## Examples
-See full [documentation](https://shane4368.github.io/discord.js-paginator).
+See full [documentation](https://shane4368.github.io/discord.js-paginator/2.x).
 
 ### Basic setup
 ```js
